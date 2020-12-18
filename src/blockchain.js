@@ -72,7 +72,12 @@ class Blockchain {
             block.hash = SHA256(JSON.stringify(block)).toString();
             self.chain.push(block);
             self.height = self.chain.length - 1;
-            resolve(block);
+            const errors = await self.validateChain();
+            if (errors.length === 0) {
+                resolve(block);
+            } else {
+                reject(Error("chain got corrupted"))
+            }
         });
     }
 
@@ -120,7 +125,10 @@ class Blockchain {
             }
 
             if (!!!bitcoinMessage.verify(message, address, signature)) {
-                reject(Error("Message was not verified"));
+                reject(Error
+                    ("Message was not verified")
+                )
+                ;
             }
 
             const block = new BlockClass.Block({"owner": address, "star": star}); // FIXME json
@@ -179,7 +187,7 @@ class Blockchain {
         return new Promise((resolve, reject) => {
             self.chain.forEach(b => {
                 const data = b.getBData();
-                if (data.owner === address){
+                if (data.owner === address) {
                     stars.push(data);
                 }
             });
@@ -197,9 +205,15 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
-            self.chain.forEach(b => errorLog.push(b.validate()));
+            await Promise.all(self.chain.map(async b => {
+                if (!await b.validate()) {
+                    errorLog.push("invalid hash block");
+                }
+                if (b.height > 0 && b.previousBlockHash !== self.chain[b.height - 1].hash) {
+                    errorLog.push("invalid previous hash block");
+                }
+            }));
             resolve(errorLog);
-            // FIXME 2cond step
         });
     }
 

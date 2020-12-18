@@ -39,15 +39,20 @@ class Block {
         let self = this;
         return new Promise((resolve, reject) => {
             // Save in auxiliary variable the current block hash
-            const aux_hash = self.hash;
-            self.hash = null;
+            const originalHash = self.hash;
+            const clone = {
+                "hash": null,
+                "height": self.height,
+                "body": self.body,
+                "time": self.time,
+                "previousBlockHash": self.previousBlockHash
+            }
 
             // Recalculate the hash of the Block
-            const hash = SHA256(JSON.stringify(self)).toString();
-            self.hash = aux_hash;
+            const recalculatedHash = SHA256(JSON.stringify(clone)).toString();
 
             // Comparing if the hashes changed
-            if (aux_hash !== hash) {
+            if (originalHash !== recalculatedHash) {
                 // Returning the Block is not valid
                 resolve(false);
             } else {
@@ -76,7 +81,7 @@ class Block {
         const obj = JSON.parse(json);
 
         // Resolve with the data if the object isn't the Genesis block
-        if (Object.keys(obj).length !== 0){ //FIXME data: 'Genesis Block'
+        if (Object.keys(obj).data !== 'Genesis Block') {
             return obj;
         } else {
             return null;
