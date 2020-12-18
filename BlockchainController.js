@@ -31,7 +31,7 @@ class BlockchainController {
                     return res.status(404).send("Block Not Found!");
                 }
             } else {
-                return res.status(404).send("Block Not Found! Review the Parameters!");
+                return res.status(404).send("Block Not Found! Review the Parameters!"); // FIXME this is a 400
             }
             
         });
@@ -49,12 +49,12 @@ class BlockchainController {
                     return res.status(500).send("An error happened!");
                 }
             } else {
-                return res.status(500).send("Check the Body Parameter!");
+                return res.status(500).send("Check the Body Parameter!"); // FIXME this is a 400
             }
         });
     }
 
-    // Endpoint that allow Submit a Star, yu need first to `requestOwnership` to have the message (POST endpoint)
+    // Endpoint that allow Submit a Star, you need first to `requestOwnership` to have the message (POST endpoint)
     submitStar() {
         this.app.post("/submitstar", async (req, res) => {
             if(req.body.address && req.body.message && req.body.signature && req.body.star) {
@@ -73,7 +73,7 @@ class BlockchainController {
                     return res.status(500).send(error);
                 }
             } else {
-                return res.status(500).send("Check the Body Parameter!");
+                return res.status(500).send("Check the Body Parameter!"); // FIXME this is a 400
             }
         });
     }
@@ -90,7 +90,7 @@ class BlockchainController {
                     return res.status(404).send("Block Not Found!");
                 }
             } else {
-                return res.status(404).send("Block Not Found! Review the Parameters!");
+                return res.status(404).send("Block Not Found! Review the Parameters!"); // FIXME this is a 400
             }
             
         });
@@ -112,7 +112,7 @@ class BlockchainController {
                     return res.status(500).send("An error happened!");
                 }
             } else {
-                return res.status(500).send("Block Not Found! Review the Parameters!");
+                return res.status(500).send("Block Not Found! Review the Parameters!"); // FIXME this is a 400
             }
             
         });
